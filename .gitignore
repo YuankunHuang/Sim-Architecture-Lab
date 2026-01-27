@@ -1,0 +1,41 @@
+# --- Build & Output ---
+build/
+bin/
+lib/
+out/
+*.exe
+*.dll
+*.so
+*.dylib
+*.o
+*.obj
+*.a
+
+# --- CMake ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# --- IDE / Editors ---
+.vscode/
+.idea/
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln
+*.sdf
+*.opensdf
+*.vcxproj
+*.vcxproj.filters
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+
+# --- Logs & Temp ---
+*.log
+*.tmp

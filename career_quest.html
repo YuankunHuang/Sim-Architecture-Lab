@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模拟架构师之路：赏金猎人看板</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-red: #ef4444;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .quest-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .quest-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quest-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: var(--accent-blue);
+        }
+
+        .level-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .lvl-1 { background-color: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+        .lvl-2 { background-color: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
+        .lvl-3 { background-color: rgba(139, 92, 246, 0.2); color: var(--accent-purple); }
+        .lvl-4 { background-color: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+
+        .quest-title {
+            font-size: 1.4rem;
+            margin: 15px 0 10px 0;
+            font-weight: 600;
+        }
+
+        .quest-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .tech-tag {
+            background-color: #334155;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #cbd5e1;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            width: 90%;
+            max-width: 700px;
+            border-radius: 16px;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .modal-header {
+            margin-bottom: 25px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        .section-title {
+            color: var(--accent-blue);
+            font-size: 1.1rem;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .reward-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 30px;
+            color: var(--accent-green);
+        }
+
+        ul { padding-left: 20px; line-height: 1.6; color: var(--text-secondary); }
+        li { margin-bottom: 8px; }
+
+    </style>
+</head>
+<body>
+
+    <h1>🚀 模拟架构师之路</h1>
+    <div class="subtitle">当前玩家状态: 资深 Unity 开发者 -> 目标: HPC & Simulation Architect</div>
+
+    <div class="quest-container">
+        <div class="quest-card" onclick="openModal('q1')">
+            <span class="level-badge lvl-1">Level 1: The Foundation</span>
+            <div class="quest-title">项目代号：粒子风暴</div>
+            <div class="quest-desc">一家科研机构需要一个脱离游戏引擎的高性能粒子模拟器。这是你摆脱 Unity 依赖的第一战。</div>
+            <div class="tech-stack">
+                <span class="tech-tag">Modern C++ (17/20)</span>
+                <span class="tech-tag">Memory Management</span>
+                <span class="tech-tag">CMake</span>
+            </div>
+        </div>
+
+        <div class="quest-card" onclick="openModal('q2')">
+            <span class="level-badge lvl-2">Level 2: High Performance</span>
+            <div class="quest-title">项目代号：拥堵城市</div>
+            <div class="quest-desc">某交通局需要模拟 10 万辆车的实时路径规划。单线程已经跑不动了，请榨干 CPU 的所有核心。</div>
+            <div class="tech-stack">
+                <span class="tech-tag">Multithreading</span>
+                <span class="tech-tag">Lock-free</span>
+                <span class="tech-tag">Data-Oriented Design</span>
+            </div>
+        </div>
+
+        <div class="quest-card" onclick="openModal('q3')">
+            <span class="level-badge lvl-3">Level 3: Distributed System</span>
+            <div class="quest-title">项目代号：镜像世界</div>
+            <div class="quest-desc">单机性能达到瓶颈。我们需要将模拟算力分布到多台服务器上，并保持状态同步。</div>
+            <div class="tech-stack">
+                <span class="tech-tag">gRPC / ZeroMQ</span>
+                <span class="tech-tag">Protobuf</span>
+                <span class="tech-tag">Docker</span>
+            </div>
+        </div>
+
+        <div class="quest-card" onclick="openModal('q4')">
+            <span class="level-badge lvl-4">Level 4: The Boss</span>
+            <div class="quest-title">项目代号：Waabi Prototype</div>
+            <div class="quest-desc">构建一个自动驾驶闭环仿真环境。生成传感器数据，输入给简单的控制算法，并在无头模式下运行。</div>
+            <div class="tech-stack">
+                <span class="tech-tag">HPC</span>
+                <span class="tech-tag">Physics Integration</span>
+                <span class="tech-tag">Sensor Sim</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-container" class="modal" onclick="if(event.target === this) closeModal()">
+        <div class="modal-content" id="modal-content">
+            </div>
+    </div>
+
+    <script>
+        const questData = {
+            'q1': {
+                title: "Level 1: 纯 C++ 粒子系统 (Particle Storm)",
+                client: "🔬 虚拟甲方：高能物理研究所",
+                brief: "我们不再需要 Unity 的 Update()。我们需要你从零构建一个 C++ 粒子系统，能够在一帧内更新并渲染 50,000 个粒子，且 FPS 不低于 60。",
+                requirements: [
+                    "**严禁使用 Unity/Unreal**，只能使用 C++ 和轻量级图形库（如 Raylib 或 SDL，甚至纯 OpenGL）。",
+                    "**核心挑战**：手动管理内存（Pool Allocator），避免 new/delete 碎片化。",
+                    "**架构要求**：将逻辑层（Update）与渲染层（Draw）解耦。",
+                    "**交付物**：一个 CMake 项目，一键编译运行。"
+                ],
+                skills: "Pointers, References, RAII, Custom Allocators, Build Systems",
+                reward: "🏆 获得成就：【内存掌控者】 - 解锁 C++ 核心理解"
+            },
+            'q2': {
+                title: "Level 2: 多线程交通模拟器 (Traffic Grid)",
+                client: "🚦 虚拟甲方：智慧城市规划局",
+                brief: "之前的单线程版本太慢了。我们需要模拟 100,000 个智能体在网格地图上的随机移动。CPU 利用率必须超过 80%。",
+                requirements: [
+                    "使用 **C++ std::thread** 或 **std::async** 进行并行计算。",
+                    "**核心挑战**：处理数据竞争（Race Conditions）。尝试使用 `std::mutex`，如果可能，升级为**无锁队列**。",
+                    "**数据结构**：从 OOP (Object Oriented) 转向 DOD (Data Oriented Design)，使用 SoA (Struct of Arrays) 优化缓存命中率。",
+                    "**可视化**：简单的 Debug 视图即可，重点是控制台输出的 'Update Time per Frame'。"
+                ],
+                skills: "Concurrency, Mutex/Atomics, Cache Coherency, Profiling (Valgrind/Superluminal)",
+                reward: "🏆 获得成就：【并发大师】 - 解锁高性能计算思维"
+            },
+            'q3': {
+                title: "Level 3: 分布式状态同步 (The Mirror World)",
+                client: "🌐 虚拟甲方：Metaverse 基础设施部",
+                brief: "我们的模拟世界太大了，一台机器装不下。你需要把 Level 2 的地图切分成 4 块，运行在 4 个不同的进程（或 Docker 容器）中。",
+                requirements: [
+                    "**通信协议**：设计一套高效的协议，让跨越边界的智能体能够平滑地从一个进程“穿梭”到另一个进程。",
+                    "**技术栈**：使用 **gRPC** 或 **ZeroMQ** 进行进程间通信。",
+                    "**序列化**：使用 **Protobuf** 或 **Flatbuffers** 进行高效数据打包。",
+                    "**挑战**：解决延迟带来的状态不同步问题（简单的预测或插值）。"
+                ],
+                skills: "Network Programming, Serialization, Microservices Architecture, Latency Compensation",
+                reward: "🏆 获得成就：【架构师雏形】 - 解锁分布式系统技能"
+            },
+            'q4': {
+                title: "Level 4: 自动驾驶闭环仿真 (Mini Waabi)",
+                client: "🤖 虚拟甲方：Waabi (Stealth Mode)",
+                brief: "这是最终测试。构建一个由数据驱动的仿真循环：Physics -> Sensor Data -> Control Logic -> Physics。",
+                requirements: [
+                    "**物理层**：集成一个轻量级物理库（如 Bullet 或 Jolt Physics）。",
+                    "**传感器层**：模拟简单的 Raycast Lidar 数据（不需要图形渲染，纯数学计算）。",
+                    "**控制层**：写一个简单的 PID 控制器，让小车根据 Lidar 数据避障。",
+                    "**运行模式**：必须支持 **Headless Mode** (无图形界面运行)，以极快速度跑完 1000 次测试场景。"
+                ],
+                skills: "System Integration, Physics Engines, Sensor Simulation, CI/CD Pipeline",
+                reward: "👑 获得成就：【Simulation Architect】 - 你已经准备好投递简历了"
+            }
+        };
+
+        function openModal(id) {
+            const data = questData[id];
+            const modal = document.getElementById('modal-container');
+            const content = document.getElementById('modal-content');
+            
+            content.innerHTML = `
+                <span class="close-btn" onclick="closeModal()">&times;</span>
+                <div class="modal-header">
+                    <h2>${data.title}</h2>
+                    <div style="color: var(--accent-blue); margin-top: 5px;">${data.client}</div>
+                </div>
+                <div class="section-title">📝 需求简述 (Brief)</div>
+                <p style="color: var(--text-primary); line-height: 1.6;">${data.brief}</p>
+                
+                <div class="section-title">⚙️ 技术规格 (Specs)</div>
+                <ul>
+                    ${data.requirements.map(req => `<li>${req}</li>`).join('')}
+                </ul>
+
+                <div class="section-title">🔧 关键技能点 (Skill Tree)</div>
+                <div class="tech-stack">
+                    ${data.skills.split(', ').map(s => `<span class="tech-tag" style="background:var(--border)">${s}</span>`).join('')}
+                </div>
+
+                <div class="reward-box">
+                    ${data.reward}
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-container').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
