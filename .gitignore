@@ -22,6 +22,8 @@ Makefile
 # --- IDE / Editors ---
 .vscode/
 .idea/
+.cache/
+compile_commands.json
 .vs/
 *.suo
 *.user
