@@ -1,52 +1,61 @@
 #include "particle_system.h"
 #include "raylib.h"
-
-// -----------------------------------------------------------------------------
-// Constants
-// -----------------------------------------------------------------------------
+#include "rlgl.h"
 
 constexpr int kScreenWidth = 1280;
-constexpr int kScreenHeight = 720;
+constexpr int kScreenHeight = 920;
 constexpr size_t kMaxParticles = 100000;
-
-// -----------------------------------------------------------------------------
-// Main
-// -----------------------------------------------------------------------------
+constexpr int kTargetFps = 60;
+constexpr size_t kEmittedPerFrame = 500;
+constexpr int kMinLifetime = 10;
+constexpr int kMaxLifetime = 20;
 
 int main()
 {
-    // Raylib init
-    InitWindow(kScreenWidth, kScreenHeight, "Level 1: Particle Storm");
-    SetTargetFPS(60);
+    InitWindow(kScreenWidth, kScreenHeight, "Level 1 Particle Storm");
+    SetTargetFPS(kTargetFps);
 
-    // Particle system init
     ParticleSystem particles(kMaxParticles);
 
-    // Game loop
     while (!WindowShouldClose())
     {
         float dt = GetFrameTime();
 
-        // === UPDATE ===
         particles.update(dt);
 
-        // === RENDER ===
+        // emit
+        for (size_t i = 0; i < kEmittedPerFrame; ++i)
+        {
+            float vx = GetRandomValue(-100, 100);
+            float vy = GetRandomValue(-100, 100);
+            float lifetime = GetRandomValue(kMinLifetime, kMaxLifetime);
+            particles.spawn(kScreenWidth / 2.0f, 0, vx, vy, lifetime);
+        }
+
+        // render
         BeginDrawing();
         ClearBackground(BLACK);
 
-        // Draw particles
-        const float* px = particles.get_positions_x();
-        const float* py = particles.get_positions_y();
-        size_t count = particles.get_active_count();
+        const float* positions_x = particles.get_positions_x();
+        const float* positions_y = particles.get_positions_y();
+        const float size = 1.0f;
 
-        for (size_t i = 0; i < count; ++i)
+        rlBegin(RL_QUADS);
+        for (size_t i = 0; i < particles.get_active_count(); ++i)
         {
-            DrawPixel(static_cast<int>(px[i]), static_cast<int>(py[i]), WHITE);
+            float x = positions_x[i];
+            float y = positions_y[i];
+            
+            rlColor4ub(255, 255, 255, 255);
+            rlVertex2f(x - size, y - size);
+            rlVertex2f(x - size, y + size);
+            rlVertex2f(x + size, y + size);
+            rlVertex2f(x + size, y - size);
         }
+        rlEnd();
 
-        // Debug info
         DrawFPS(10, 10);
-        DrawText(TextFormat("Particles: %zu", count), 10, 40, 20, GREEN);
+        DrawText(TextFormat("Particles: %zu", particles.get_active_count()), 10, 40, 20, GREEN);
 
         EndDrawing();
     }

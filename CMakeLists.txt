@@ -40,6 +40,6 @@ FetchContent_MakeAvailable(raylib)
 # "Unlock" one line at a time
 # add_subdirectory(shared)
 add_subdirectory(level_1_particle_storm)
-# add_subdirectory(level_2_traffic_grid)
+add_subdirectory(level_2_traffic_grid)
 
-message(STATUS "🚀 Simulation Architect Quest initialized using C++ ${CMAKE_CXX_STANDARD}")
+message(STATUS "🚀 Simulation Architecture Lab initialized using C++ ${CMAKE_CXX_STANDARD}")
