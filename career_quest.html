@@ -3,334 +3,2492 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>模拟架构师之路：赏金猎人看板</title>
+    <title>Sim-Architecture-Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --accent-green: #10b981;
-            --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
-            --accent-red: #ef4444;
-            --border: #334155;
+            /* 护眼深色主题 - 降低纯黑对比度，使用深灰蓝色调 */
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-hover: #30363d;
+            
+            /* 文字颜色 - 提高亮度和可读性 */
+            --text-primary: #e6edf3;
+            --text-secondary: #b1bac4;
+            --text-muted: #8b949e;
+            
+            --border: #30363d;
+            --border-hover: #484f58;
+            
+            /* 降低饱和度的护眼色彩 */
+            --cyan: #58a6ff;
+            --cyan-dim: rgba(88, 166, 255, 0.15);
+            --green: #56d364;
+            --green-dim: rgba(86, 211, 100, 0.15);
+            --blue: #79c0ff;
+            --blue-dim: rgba(121, 192, 255, 0.15);
+            --purple: #bc8cff;
+            --purple-dim: rgba(188, 140, 255, 0.15);
+            --pink: #ff9bce;
+            --pink-dim: rgba(255, 155, 206, 0.15);
+            --orange: #ffa657;
+            --orange-dim: rgba(255, 166, 87, 0.15);
+            --yellow: #e3b341;
+            --yellow-dim: rgba(227, 179, 65, 0.15);
+            --red: #ff7b72;
+            --red-dim: rgba(255, 123, 114, 0.15);
+            
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
             color: var(--text-primary);
-            margin: 0;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            line-height: 1.6;
+            min-height: 100vh;
         }
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, var(--accent-blue), var(--accent-green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subtitle {
-            color: var(--text-secondary);
-            margin-bottom: 40px;
-            font-size: 1.1rem;
-        }
-
-        .quest-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        .quest-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quest-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            border-color: var(--accent-blue);
-        }
-
-        .level-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .lvl-1 { background-color: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
-        .lvl-2 { background-color: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
-        .lvl-3 { background-color: rgba(139, 92, 246, 0.2); color: var(--accent-purple); }
-        .lvl-4 { background-color: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
-
-        .quest-title {
-            font-size: 1.4rem;
-            margin: 15px 0 10px 0;
-            font-weight: 600;
-        }
-
-        .quest-desc {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .tech-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: auto;
-        }
-
-        .tech-tag {
-            background-color: #334155;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            color: #cbd5e1;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse 80% 50% at 50% -20%, rgba(34, 211, 238, 0.08), transparent),
+                radial-gradient(ellipse 60% 40% at 100% 100%, rgba(192, 132, 252, 0.05), transparent);
+            pointer-events: none;
+            z-index: -1;
         }
 
-        .modal.active {
-            display: flex;
-            opacity: 1;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 24px;
         }
 
-        .modal-content {
-            background-color: var(--card-bg);
-            width: 90%;
-            max-width: 700px;
-            border-radius: 16px;
-            padding: 40px;
-            position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-16px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateX(-12px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        
+        @keyframes checkPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Smooth easing functions */
+        :root {
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+            --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+            --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .logo {
+            font-size: 2.8rem;
+            font-weight: 700;
+            letter-spacing: -2px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--cyan) 0%, var(--purple) 50%, var(--pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .philosophy {
+            font-size: 0.9rem;
+            color: var(--cyan);
+            font-style: italic;
+            opacity: 0.8;
+        }
+
+        /* Stats Grid */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 40px;
+            animation: fadeIn 0.8s ease-out 0.2s both;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
             border: 1px solid var(--border);
-            max-height: 85vh;
-            overflow-y: auto;
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            transition: 
+                border-color 0.3s var(--ease-out-expo),
+                transform 0.3s var(--ease-out-expo),
+                box-shadow 0.3s var(--ease-out-expo);
         }
 
-        .close-btn {
+        .stat-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+        }
+
+        .stat-value.highlight {
+            color: var(--cyan);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 4px;
+        }
+
+        /* Progress Section */
+        .progress-section {
+            margin-top: 32px;
+            animation: fadeIn 0.8s ease-out 0.3s both;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-title {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+        }
+
+        .progress-percentage {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            font-weight: 600;
+        }
+
+        .progress-container {
+            background: var(--bg-secondary);
+            border-radius: 100px;
+            padding: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .progress-bar {
+            height: 10px;
+            border-radius: 100px;
+            background: linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+            transition: width 0.8s var(--ease-out-expo);
+            min-width: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar::after {
+            content: '';
             position: absolute;
-            top: 20px;
-            right: 25px;
-            font-size: 2rem;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg, 
+                transparent, 
+                rgba(255,255,255,0.15), 
+                transparent
+            );
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
             cursor: pointer;
+            transition: 
+                background 0.25s var(--ease-out-expo),
+                border-color 0.25s var(--ease-out-expo),
+                color 0.25s var(--ease-out-expo),
+                transform 0.25s var(--ease-out-expo),
+                box-shadow 0.25s var(--ease-out-expo);
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
             color: var(--text-secondary);
         }
 
-        .modal-header {
-            margin-bottom: 25px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 15px;
+        .btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+            transform: translateY(-1px);
         }
 
-        .section-title {
-            color: var(--accent-blue);
-            font-size: 1.1rem;
-            margin-top: 25px;
-            margin-bottom: 10px;
-            font-weight: bold;
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-danger {
+            border-color: rgba(255, 123, 114, 0.3);
+            color: var(--red);
+        }
+
+        .btn-danger:hover {
+            background: var(--red-dim);
+            border-color: var(--red);
+        }
+
+        /* Timeline */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 48px;
+        }
+
+        /* Phase Card */
+        .phase-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: 
+                border-color 0.4s var(--ease-out-expo),
+                box-shadow 0.4s var(--ease-out-expo),
+                transform 0.3s var(--ease-out-expo);
+            animation: slideIn 0.7s var(--ease-out-expo) both;
+        }
+
+        .phase-card:nth-child(1) { animation-delay: 0.02s; }
+        .phase-card:nth-child(2) { animation-delay: 0.06s; }
+        .phase-card:nth-child(3) { animation-delay: 0.1s; }
+        .phase-card:nth-child(4) { animation-delay: 0.14s; }
+        .phase-card:nth-child(5) { animation-delay: 0.18s; }
+        .phase-card:nth-child(6) { animation-delay: 0.22s; }
+        .phase-card:nth-child(7) { animation-delay: 0.26s; }
+        .phase-card:nth-child(8) { animation-delay: 0.3s; }
+
+        .phase-card:hover {
+            border-color: var(--border-hover);
+        }
+
+        .phase-card.expanded {
+            border-color: var(--cyan);
+            box-shadow: 0 0 0 1px var(--cyan), 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .phase-card.completed .phase-header {
+            border-left: 4px solid var(--green);
+        }
+
+        .phase-card.in-progress .phase-header {
+            border-left: 4px solid var(--cyan);
+        }
+
+        .phase-card.in-progress .phase-header::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--cyan);
+            animation: pulse 2s infinite;
+        }
+
+        /* Phase Header */
+        .phase-header {
             display: flex;
             align-items: center;
+            padding: 20px 24px;
+            cursor: pointer;
+            user-select: none;
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
         }
 
-        .reward-box {
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            padding: 15px;
+        .phase-header:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .phase-header:active {
+            background: var(--bg-hover);
+        }
+
+        .phase-number {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 6px;
+            margin-right: 16px;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .phase-0 .phase-number { background: var(--bg-tertiary); color: var(--text-secondary); }
+        .phase-1 .phase-number { background: var(--cyan-dim); color: var(--cyan); }
+        .phase-2 .phase-number { background: var(--blue-dim); color: var(--blue); }
+        .phase-3 .phase-number { background: var(--purple-dim); color: var(--purple); }
+        .phase-4 .phase-number { background: var(--pink-dim); color: var(--pink); }
+        .phase-5 .phase-number { background: var(--orange-dim); color: var(--orange); }
+        .phase-6 .phase-number { background: var(--yellow-dim); color: var(--yellow); }
+        .phase-7 .phase-number { background: var(--red-dim); color: var(--red); }
+
+        .phase-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .phase-title-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+
+        .phase-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .phase-progress-mini {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+        }
+
+        .phase-progress-mini.complete {
+            background: var(--green-dim);
+            color: var(--green);
+        }
+
+        .phase-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .phase-capstone-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--green);
+        }
+
+        .phase-toggle {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            transition: 
+                transform 0.4s var(--spring),
+                background 0.3s var(--ease-out-expo),
+                color 0.3s var(--ease-out-expo);
+            font-size: 0.9rem;
+            margin-left: 12px;
+        }
+
+        .phase-header:hover .phase-toggle {
+            background: var(--bg-hover);
+        }
+
+        .phase-card.expanded .phase-toggle {
+            transform: rotate(180deg);
+            background: var(--cyan-dim);
+            color: var(--cyan);
+        }
+
+        /* Phase Content */
+        .phase-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.5s var(--ease-out-expo);
+        }
+
+        .phase-card.expanded .phase-content {
+            grid-template-rows: 1fr;
+        }
+        
+        .phase-content-wrapper {
+            overflow: hidden;
+        }
+
+        .phase-inner {
+            padding: 0 24px 24px 24px;
+            border-top: 1px solid var(--border);
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: 
+                opacity 0.4s var(--ease-out-expo) 0.1s,
+                transform 0.4s var(--ease-out-expo) 0.1s;
+        }
+        
+        .phase-card.expanded .phase-inner {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .phase-goal {
+            padding: 20px 0;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Drill Grid */
+        .drill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .phase-card.expanded .drill-card {
+            animation: drillFadeIn 0.4s var(--ease-out-expo) both;
+        }
+        
+        .phase-card.expanded .drill-card:nth-child(1) { animation-delay: 0.05s; }
+        .phase-card.expanded .drill-card:nth-child(2) { animation-delay: 0.08s; }
+        .phase-card.expanded .drill-card:nth-child(3) { animation-delay: 0.11s; }
+        .phase-card.expanded .drill-card:nth-child(4) { animation-delay: 0.14s; }
+        .phase-card.expanded .drill-card:nth-child(5) { animation-delay: 0.17s; }
+        .phase-card.expanded .drill-card:nth-child(6) { animation-delay: 0.20s; }
+        .phase-card.expanded .drill-card:nth-child(7) { animation-delay: 0.23s; }
+        .phase-card.expanded .drill-card:nth-child(8) { animation-delay: 0.26s; }
+        
+        @keyframes drillFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .drill-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: 
+                border-color 0.3s var(--ease-out-expo),
+                background 0.3s var(--ease-out-expo),
+                transform 0.3s var(--ease-out-expo),
+                box-shadow 0.3s var(--ease-out-expo);
+        }
+
+        .drill-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .drill-card.done {
+            border-color: rgba(86, 211, 100, 0.3);
+            background: rgba(86, 211, 100, 0.04);
+        }
+
+        .drill-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            cursor: pointer;
+        }
+
+        .drill-header:hover {
+            background: var(--bg-tertiary);
+        }
+
+        /* Custom Checkbox */
+        .checkbox-wrapper {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .checkbox-input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .checkbox-custom {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border-hover);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 
+                background 0.3s var(--ease-out-expo),
+                border-color 0.3s var(--ease-out-expo),
+                transform 0.3s var(--spring);
+            background: var(--bg-secondary);
+        }
+
+        .checkbox-custom:hover {
+            border-color: var(--cyan);
+            background: var(--cyan-dim);
+            transform: scale(1.05);
+        }
+
+        .checkbox-custom:active {
+            transform: scale(0.95);
+        }
+
+        .checkbox-input:checked + .checkbox-custom {
+            background: var(--green);
+            border-color: var(--green);
+            animation: checkPop 0.3s var(--ease-out-expo);
+        }
+
+        .checkbox-custom::after {
+            content: '';
+            width: 6px;
+            height: 10px;
+            border: solid transparent;
+            border-width: 0 2.5px 2.5px 0;
+            transform: rotate(45deg) scale(0);
+            transition: transform 0.25s var(--spring);
+        }
+
+        .checkbox-input:checked + .checkbox-custom::after {
+            border-color: var(--bg-primary);
+            transform: rotate(45deg) scale(1);
+        }
+
+        .drill-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .drill-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .drill-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--cyan);
+            font-weight: 500;
+        }
+
+        .drill-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .drill-skills {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .drill-expand-btn {
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+
+        .drill-expand-btn:hover {
+            color: var(--cyan);
+            background: var(--bg-hover);
+        }
+
+        /* Drill Tasks */
+        .drill-tasks {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s var(--ease-out-expo);
+            background: var(--bg-secondary);
+        }
+
+        .drill-card.expanded .drill-tasks {
+            grid-template-rows: 1fr;
+        }
+
+        .drill-tasks-inner {
+            overflow: hidden;
+            min-height: 0;
+        }
+        
+        .drill-tasks-content {
+            padding: 16px 20px 20px 20px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .drill-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            background: var(--bg-primary);
             border-radius: 8px;
-            margin-top: 30px;
-            color: var(--accent-green);
+            border-left: 3px solid var(--cyan);
+        }
+        
+        .drill-tasks-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+        
+        .drill-card.expanded .drill-tasks-content .task-item {
+            animation: taskFadeIn 0.3s var(--ease-out-expo) both;
+        }
+        
+        .drill-card.expanded .drill-tasks-content .task-item:nth-child(1) { animation-delay: 0.02s; }
+        .drill-card.expanded .drill-tasks-content .task-item:nth-child(2) { animation-delay: 0.05s; }
+        .drill-card.expanded .drill-tasks-content .task-item:nth-child(3) { animation-delay: 0.08s; }
+        .drill-card.expanded .drill-tasks-content .task-item:nth-child(4) { animation-delay: 0.11s; }
+        .drill-card.expanded .drill-tasks-content .task-item:nth-child(5) { animation-delay: 0.14s; }
+        .drill-card.expanded .drill-tasks-content .task-item:nth-child(6) { animation-delay: 0.17s; }
+        
+        @keyframes taskFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
-        ul { padding-left: 20px; line-height: 1.6; color: var(--text-secondary); }
-        li { margin-bottom: 8px; }
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            transition: background 0.2s var(--ease-out-expo);
+        }
+        
+        .task-item:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .task-item:last-child {
+            margin-bottom: 0;
+        }
 
+        .task-checkbox-wrapper {
+            flex-shrink: 0;
+        }
+
+        .task-checkbox {
+            width: 16px;
+            height: 16px;
+            border: 1.5px solid var(--border-hover);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 
+                background 0.25s var(--ease-out-expo),
+                border-color 0.25s var(--ease-out-expo),
+                transform 0.25s var(--spring);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-primary);
+        }
+
+        .task-checkbox:hover {
+            border-color: var(--cyan);
+            transform: scale(1.1);
+        }
+
+        .task-checkbox:active {
+            transform: scale(0.9);
+        }
+
+        .task-checkbox.done {
+            background: var(--green);
+            border-color: var(--green);
+            animation: checkPop 0.25s var(--ease-out-expo);
+        }
+
+        .task-checkbox.done::after {
+            content: '✓';
+            font-size: 10px;
+            color: var(--bg-primary);
+            animation: fadeIn 0.2s var(--ease-out-expo);
+        }
+
+        .task-text {
+            flex: 1;
+            transition: 
+                opacity 0.3s var(--ease-out-expo),
+                color 0.3s var(--ease-out-expo);
+        }
+
+        .task-text.done {
+            text-decoration: line-through;
+            opacity: 0.5;
+            color: var(--text-muted);
+        }
+
+        /* Capstone Section */
+        .capstone-section {
+            background: linear-gradient(135deg, var(--green-dim), var(--cyan-dim));
+            border: 1px solid rgba(86, 211, 100, 0.25);
+            border-radius: var(--radius);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .capstone-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: background 0.2s var(--ease-out-expo);
+        }
+        
+        .capstone-header:hover {
+            background: rgba(86, 211, 100, 0.08);
+        }
+
+        .capstone-icon {
+            font-size: 1.3rem;
+        }
+        
+        .capstone-header-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .capstone-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--green);
+            display: block;
+        }
+        
+        .capstone-client-mini {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+            display: block;
+        }
+        
+        .capstone-header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .capstone-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .capstone-expand-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            transition: transform 0.4s var(--spring);
+        }
+        
+        .capstone-section.expanded .capstone-expand-icon {
+            transform: rotate(180deg);
+        }
+        
+        /* Capstone Content (collapsible) */
+        .capstone-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s var(--ease-out-expo);
+        }
+        
+        .capstone-section.expanded .capstone-content {
+            grid-template-rows: 1fr;
+        }
+        
+        .capstone-content-inner {
+            overflow: hidden;
+            min-height: 0;
+        }
+        
+        .capstone-section.expanded .capstone-content-inner {
+            padding: 0 20px 20px 20px;
+        }
+
+        .capstone-status-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.4s var(--ease-out-expo);
+        }
+
+        .toggle-switch:hover {
+            background: var(--bg-hover);
+        }
+
+        .toggle-switch.active {
+            background: var(--green);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.4s var(--spring);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+        }
+
+        .capstone-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .capstone-spec {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            padding: 5px 10px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+        
+        .capstone-desc {
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border-left: 3px solid var(--green);
+        }
+        
+        .capstone-block {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        .capstone-block.acceptance {
+            border-color: rgba(86, 211, 100, 0.3);
+            background: rgba(86, 211, 100, 0.05);
+        }
+        
+        .capstone-block-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .capstone-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .capstone-list li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .capstone-list li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--cyan);
+        }
+        
+        .capstone-block.acceptance .capstone-list li::before {
+            content: '✓';
+            color: var(--green);
+            font-size: 0.8rem;
+        }
+
+        /* OMSCS Link */
+        .omscs-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 10px 16px;
+            background: var(--purple-dim);
+            border: 1px solid rgba(192, 132, 252, 0.2);
+            border-radius: var(--radius);
+            color: var(--purple);
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .omscs-link:hover {
+            background: rgba(192, 132, 252, 0.2);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 14px 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transform: translateY(80px) scale(0.9);
+            opacity: 0;
+            transition: 
+                transform 0.5s var(--spring),
+                opacity 0.4s var(--ease-out-expo);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .toast.show {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        .toast.success {
+            border-color: var(--green);
+        }
+
+        .toast.success::before {
+            content: '✓';
+            color: var(--green);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 16px;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .phase-header {
+                padding: 16px;
+                flex-wrap: wrap;
+            }
+
+            .drill-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--bg-hover);
+        }
     </style>
 </head>
 <body>
+    <div class="container">
+        <header>
+            <div class="logo">Sim-Architecture-Lab</div>
+            <div class="tagline">22 周 · 8 阶段 · 46 Drills · 5 Capstones</div>
+            <div class="philosophy">"Making the invisible visible."</div>
 
-    <h1>🚀 模拟架构师之路</h1>
-    <div class="subtitle">当前玩家状态: 资深 Unity 开发者 -> 目标: HPC & Simulation Architect</div>
-
-    <div class="quest-container">
-        <div class="quest-card" onclick="openModal('q1')">
-            <span class="level-badge lvl-1">Level 1: The Foundation</span>
-            <div class="quest-title">项目代号：粒子风暴</div>
-            <div class="quest-desc">一家科研机构需要一个脱离游戏引擎的高性能粒子模拟器。这是你摆脱 Unity 依赖的第一战。</div>
-            <div class="tech-stack">
-                <span class="tech-tag">Modern C++ (17/20)</span>
-                <span class="tech-tag">Memory Management</span>
-                <span class="tech-tag">CMake</span>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value highlight" id="stat-phases">0/8</div>
+                    <div class="stat-label">Phases</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-drills">0/46</div>
+                    <div class="stat-label">Drills</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-tasks">0</div>
+                    <div class="stat-label">Tasks</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-capstones">0/5</div>
+                    <div class="stat-label">Capstones</div>
+                </div>
             </div>
-        </div>
 
-        <div class="quest-card" onclick="openModal('q2')">
-            <span class="level-badge lvl-2">Level 2: High Performance</span>
-            <div class="quest-title">项目代号：拥堵城市</div>
-            <div class="quest-desc">某交通局需要模拟 10 万辆车的实时路径规划。单线程已经跑不动了，请榨干 CPU 的所有核心。</div>
-            <div class="tech-stack">
-                <span class="tech-tag">Multithreading</span>
-                <span class="tech-tag">Lock-free</span>
-                <span class="tech-tag">Data-Oriented Design</span>
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span class="progress-title">Overall Progress</span>
+                    <span class="progress-percentage" id="progress-percent">0%</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
+                </div>
             </div>
-        </div>
 
-        <div class="quest-card" onclick="openModal('q3')">
-            <span class="level-badge lvl-3">Level 3: Distributed System</span>
-            <div class="quest-title">项目代号：镜像世界</div>
-            <div class="quest-desc">单机性能达到瓶颈。我们需要将模拟算力分布到多台服务器上，并保持状态同步。</div>
-            <div class="tech-stack">
-                <span class="tech-tag">gRPC / ZeroMQ</span>
-                <span class="tech-tag">Protobuf</span>
-                <span class="tech-tag">Docker</span>
+            <div class="actions">
+                <button class="btn" onclick="collapseAll()">收起全部</button>
+                <button class="btn" onclick="expandAll()">展开全部</button>
+                <button class="btn" onclick="exportProgress()">导出进度</button>
+                <button class="btn" onclick="importProgress()">导入进度</button>
+                <button class="btn btn-danger" onclick="resetProgress()">重置进度</button>
             </div>
-        </div>
+        </header>
 
-        <div class="quest-card" onclick="openModal('q4')">
-            <span class="level-badge lvl-4">Level 4: The Boss</span>
-            <div class="quest-title">项目代号：Waabi Prototype</div>
-            <div class="quest-desc">构建一个自动驾驶闭环仿真环境。生成传感器数据，输入给简单的控制算法，并在无头模式下运行。</div>
-            <div class="tech-stack">
-                <span class="tech-tag">HPC</span>
-                <span class="tech-tag">Physics Integration</span>
-                <span class="tech-tag">Sensor Sim</span>
-            </div>
-        </div>
+        <div class="timeline" id="timeline"></div>
     </div>
 
-    <div id="modal-container" class="modal" onclick="if(event.target === this) closeModal()">
-        <div class="modal-content" id="modal-content">
-            </div>
-    </div>
+    <div class="toast" id="toast"></div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="importInput" accept=".json" style="display: none;" onchange="handleImport(event)">
 
     <script>
-        const questData = {
-            'q1': {
-                title: "Level 1: 纯 C++ 粒子系统 (Particle Storm)",
-                client: "🔬 虚拟甲方：高能物理研究所",
-                brief: "我们不再需要 Unity 的 Update()。我们需要你从零构建一个 C++ 粒子系统，能够在一帧内更新并渲染 50,000 个粒子，且 FPS 不低于 60。",
-                requirements: [
-                    "**严禁使用 Unity/Unreal**，只能使用 C++ 和轻量级图形库（如 Raylib 或 SDL，甚至纯 OpenGL）。",
-                    "**核心挑战**：手动管理内存（Pool Allocator），避免 new/delete 碎片化。",
-                    "**架构要求**：将逻辑层（Update）与渲染层（Draw）解耦。",
-                    "**交付物**：一个 CMake 项目，一键编译运行。"
+        // ============================================================
+        // Data Model
+        // ============================================================
+        const STORAGE_KEY = 'sim-architecture-lab-progress';
+
+        const initialPhases = [
+            {
+                id: 0,
+                title: "C++ Onboarding",
+                duration: "2 weeks",
+                month: "Feb 2026",
+                goal: "从 C# 思维过渡到 C++ 思维。掌握现代 C++ 核心概念：RAII、智能指针、移动语义、模板基础。",
+                drills: [
+                    { 
+                        id: "0.1", 
+                        name: "Hello CMake", 
+                        skills: "CMake, FetchContent",
+                        desc: "理解现代 C++ 项目的构建系统。CMake 是业界标准，掌握它是进入 C++ 世界的第一步。",
+                        tasks: [
+                            "创建 CMakeLists.txt，使用 add_executable 添加一个 hello world 目标",
+                            "创建一个静态库 (add_library)，并用 target_link_libraries 链接到主程序",
+                            "使用 FetchContent 从 GitHub 拉取 fmt 或 spdlog，并在代码中使用",
+                            "设置 CMAKE_EXPORT_COMPILE_COMMANDS=ON，验证 compile_commands.json 生成"
+                        ]
+                    },
+                    { 
+                        id: "0.2", 
+                        name: "RAII & Smart Pointers", 
+                        skills: "unique_ptr, shared_ptr",
+                        desc: "RAII (Resource Acquisition Is Initialization) 是 C++ 最重要的惯用法。智能指针让你告别手动内存管理。",
+                        tasks: [
+                            "实现一个 FileHandle 类：构造函数 fopen，析构函数 fclose，禁止拷贝",
+                            "将一段使用 new/delete 的代码重构为 std::unique_ptr",
+                            "写一个例子说明何时需要 shared_ptr（共享所有权场景）",
+                            "为 unique_ptr 实现自定义删除器（如 fclose、SDL_DestroyWindow）"
+                        ]
+                    },
+                    { 
+                        id: "0.3", 
+                        name: "Move Semantics", 
+                        skills: "Rvalue refs, std::move",
+                        desc: "移动语义是 C++11 的革命性特性，让你避免不必要的深拷贝，提升性能。",
+                        tasks: [
+                            "实现一个 Buffer 类，包含动态数组，实现移动构造和移动赋值",
+                            "用 std::chrono 测量 1000 次拷贝 vs 移动 1MB vector 的时间差",
+                            "实现一个函数，正确使用 std::move 将 unique_ptr 转移到容器中",
+                            "写一个例子展示 RVO (Return Value Optimization)，验证拷贝被省略"
+                        ]
+                    },
+                    { 
+                        id: "0.4", 
+                        name: "Templates 101", 
+                        skills: "Function/class templates",
+                        desc: "模板是 C++ 泛型编程的基础，让你写出类型安全且零开销的通用代码。",
+                        tasks: [
+                            "实现泛型 max<T>(a, b) 函数，使用 const T& 参数",
+                            "实现固定大小数组 Array<T, N>，支持 operator[] 和 size()",
+                            "使用 auto 返回类型实现一个返回 pair 的函数",
+                            "使用 std::enable_if 限制模板只接受数值类型（is_arithmetic）"
+                        ]
+                    },
+                    { 
+                        id: "0.5", 
+                        name: "STL Deep Dive", 
+                        skills: "vector, algorithms",
+                        desc: "STL 是 C++ 标准库的核心，掌握它能让你写出简洁高效的代码。",
+                        tasks: [
+                            "基准测试：vector 中间插入 vs list 中间插入，10000 次，记录时间",
+                            "为自定义 struct 实现 std::hash 特化，放入 unordered_set",
+                            "用 std::transform + lambda 将 vector<int> 映射为 vector<string>",
+                            "对比 for(auto& x : v) vs for(auto it = v.begin()...) 的可读性和性能"
+                        ]
+                    }
                 ],
-                skills: "Pointers, References, RAII, Custom Allocators, Build Systems",
-                reward: "🏆 获得成就：【内存掌控者】 - 解锁 C++ 核心理解"
+                capstone: null,
+                omscs: null
             },
-            'q2': {
-                title: "Level 2: 多线程交通模拟器 (Traffic Grid)",
-                client: "🚦 虚拟甲方：智慧城市规划局",
-                brief: "之前的单线程版本太慢了。我们需要模拟 100,000 个智能体在网格地图上的随机移动。CPU 利用率必须超过 80%。",
-                requirements: [
-                    "使用 **C++ std::thread** 或 **std::async** 进行并行计算。",
-                    "**核心挑战**：处理数据竞争（Race Conditions）。尝试使用 `std::mutex`，如果可能，升级为**无锁队列**。",
-                    "**数据结构**：从 OOP (Object Oriented) 转向 DOD (Data Oriented Design)，使用 SoA (Struct of Arrays) 优化缓存命中率。",
-                    "**可视化**：简单的 Debug 视图即可，重点是控制台输出的 'Update Time per Frame'。"
+            {
+                id: 1,
+                title: "Memory Architecture",
+                duration: "2 weeks",
+                month: "Feb 2026",
+                goal: "完全掌控内存分配。理解栈/堆区别、内存对齐、缓存行。实现自定义内存分配器。",
+                drills: [
+                    { 
+                        id: "1.1", 
+                        name: "Raw Pointers", 
+                        skills: "Pointer arithmetic",
+                        desc: "在使用智能指针之前，必须彻底理解裸指针。这是 C++ 底层能力的基础。",
+                        tasks: [
+                            "用指针算术实现 memcpy：while (*dst++ = *src++)",
+                            "用 malloc 分配 int 数组，手动初始化，用 free 释放，检查内存泄漏",
+                            "写一个违反严格别名规则的例子，观察 -O2 下的未定义行为",
+                            "用 AddressSanitizer (-fsanitize=address) 检测越界访问"
+                        ]
+                    },
+                    { 
+                        id: "1.2", 
+                        name: "Stack vs Heap", 
+                        skills: "Allocation performance",
+                        desc: "栈分配极快（只移动栈指针），堆分配需要系统调用。理解这个差异对性能至关重要。",
+                        tasks: [
+                            "测量：循环 1M 次分配 64 字节，栈变量 vs new/delete，记录时间差",
+                            "递归函数测试栈深度限制，找到你系统的默认栈大小",
+                            "实现 FixedVector<T, N>：固定容量，栈上分配，无堆操作",
+                            "用 perf stat 对比两种分配方式的 cache-misses 和 page-faults"
+                        ]
+                    },
+                    { 
+                        id: "1.3", 
+                        name: "Memory Arena", 
+                        skills: "Linear allocator",
+                        desc: "Arena/Linear Allocator 是游戏引擎中最常用的分配器：一次分配，批量释放，零碎片。",
+                        tasks: [
+                            "实现 Arena 类：构造时 malloc 一大块（如 1MB），维护 offset 指针",
+                            "实现 alloc(size_t n)：返回当前位置，offset += n，检查越界",
+                            "实现 reset()：offset = 0，所有分配一次性失效",
+                            "用 Arena 做帧临时分配：每帧开始 reset，帧内随意分配"
+                        ]
+                    },
+                    { 
+                        id: "1.4", 
+                        name: "Object Pool", 
+                        skills: "placement new",
+                        desc: "对象池预分配固定数量对象，避免运行时内存分配。这是粒子系统的核心技术。",
+                        tasks: [
+                            "实现 Pool<T, N>：预分配 N 个 T 的内存（不调用构造函数）",
+                            "用 free-list（链表）管理空闲槽位，alloc/free 均 O(1)",
+                            "使用 placement new 在预分配内存上构造对象",
+                            "实现 swap-and-pop 删除：将最后一个对象移到被删除位置"
+                        ]
+                    },
+                    { 
+                        id: "1.5", 
+                        name: "Alignment", 
+                        skills: "alignas, cache line",
+                        desc: "现代 CPU 按缓存行（64 字节）读取内存。错误的对齐会导致性能灾难。",
+                        tasks: [
+                            "使用 alignas(64) 声明结构体，用 offsetof 验证成员偏移",
+                            "多线程递增相邻 int 变量，测量 false sharing 造成的性能下降",
+                            "实现 aligned_alloc 包装器，确保返回 64 字节对齐的内存",
+                            "分析一个 struct，用 sizeof/offsetof 找出隐藏的 padding"
+                        ]
+                    }
                 ],
-                skills: "Concurrency, Mutex/Atomics, Cache Coherency, Profiling (Valgrind/Superluminal)",
-                reward: "🏆 获得成就：【并发大师】 - 解锁高性能计算思维"
+                capstone: { 
+                    name: "Particle Storm", 
+                    desc: "构建一个高性能 CPU 粒子系统，展示你对内存架构的掌握。",
+                    client: "🔬 虚拟甲方：高能物理研究所粒子可视化组",
+                    requirements: [
+                        "同时渲染 100,000 个活跃粒子",
+                        "保持 60 FPS (16.67ms per frame)",
+                        "更新循环中零堆分配（验证方法：重载 global new 并断言）",
+                        "使用 SOA 数据布局（position_x[], position_y[], ... 分离数组）",
+                        "使用 Swap-and-Pop 实现 O(1) 粒子销毁"
+                    ],
+                    deliverables: [
+                        "可运行的 CMake 项目，一键 cmake --build",
+                        "README 包含架构图、性能数据、关键设计决策",
+                        "演示 GIF 或视频"
+                    ],
+                    acceptance: [
+                        "perf stat 显示 update 阶段无 malloc/free 调用",
+                        "帧时间稳定在 16ms 以下，无明显波动"
+                    ]
+                },
+                omscs: null
             },
-            'q3': {
-                title: "Level 3: 分布式状态同步 (The Mirror World)",
-                client: "🌐 虚拟甲方：Metaverse 基础设施部",
-                brief: "我们的模拟世界太大了，一台机器装不下。你需要把 Level 2 的地图切分成 4 块，运行在 4 个不同的进程（或 Docker 容器）中。",
-                requirements: [
-                    "**通信协议**：设计一套高效的协议，让跨越边界的智能体能够平滑地从一个进程“穿梭”到另一个进程。",
-                    "**技术栈**：使用 **gRPC** 或 **ZeroMQ** 进行进程间通信。",
-                    "**序列化**：使用 **Protobuf** 或 **Flatbuffers** 进行高效数据打包。",
-                    "**挑战**：解决延迟带来的状态不同步问题（简单的预测或插值）。"
+            {
+                id: 2,
+                title: "Data-Oriented Design",
+                duration: "2 weeks",
+                month: "Mar 2026",
+                goal: "让 CPU Cache 成为你最好的朋友。深入理解缓存行、数据局部性、热/冷分离。",
+                drills: [
+                    { 
+                        id: "2.1", 
+                        name: "AOS vs SOA Benchmark", 
+                        skills: "Layout comparison",
+                        desc: "Array of Structs vs Struct of Arrays 是 DOD 的核心概念。SOA 对缓存更友好。",
+                        tasks: [
+                            "AOS: struct Particle { x, y, z, vx, vy, vz }; Particle particles[N]",
+                            "SOA: struct Particles { x[N], y[N], z[N], vx[N], vy[N], vz[N] }",
+                            "实现相同的 update 逻辑，1M 粒子，记录两者时间",
+                            "用 perf stat -e cache-misses 量化缓存未命中差异"
+                        ]
+                    },
+                    { 
+                        id: "2.2", 
+                        name: "Cache Line Experiment", 
+                        skills: "perf stat",
+                        desc: "CPU 不会读取单个字节，而是读取整个缓存行（64 字节）。理解这一点能解释很多性能问题。",
+                        tasks: [
+                            "创建大数组，以步长 1/16/64/128/256 遍历，记录时间",
+                            "用 perf stat 测量 L1-dcache-load-misses 在不同步长下的变化",
+                            "解释为什么步长超过 64 后性能急剧下降",
+                            "绘制 \"步长-时间\" 曲线，标注缓存行边界"
+                        ]
+                    },
+                    { 
+                        id: "2.3", 
+                        name: "Hot/Cold Splitting", 
+                        skills: "Data separation",
+                        desc: "将频繁访问（热）和偶尔访问（冷）的数据分离，让热路径的缓存利用率最大化。",
+                        tasks: [
+                            "定义 EntityFull { id, x, y, z, vx, vy, vz, name[64], created_at, ... }",
+                            "拆分为 EntityCore { id, x, y, z, vx, vy, vz } + EntityMeta { name, created_at }",
+                            "只迭代 EntityCore 做物理更新，测量性能提升",
+                            "记录何时值得拆分（字段访问频率差异 > 10x）"
+                        ]
+                    },
+                    { 
+                        id: "2.4", 
+                        name: "Data Locality", 
+                        skills: "Access patterns",
+                        desc: "顺序访问内存比随机访问快 100 倍以上。设计数据结构时必须考虑访问模式。",
+                        tasks: [
+                            "创建 1M 元素数组，顺序遍历 vs 随机遍历，记录时间",
+                            "实现按 z 坐标排序后再处理的优化",
+                            "对比使用指针间接访问 vs 使用索引直接访问的性能",
+                            "尝试 __builtin_prefetch，在已知访问模式时提前加载数据"
+                        ]
+                    },
+                    { 
+                        id: "2.5", 
+                        name: "Struct Packing", 
+                        skills: "padding analysis",
+                        desc: "编译器会在结构体中插入填充字节以满足对齐要求。理解这一点可以优化内存布局。",
+                        tasks: [
+                            "struct Bad { char a; double b; char c; }; // sizeof = ?",
+                            "重排成员：struct Good { double b; char a; char c; }; // sizeof = ?",
+                            "用 offsetof 打印每个成员的偏移量，画出内存布局图",
+                            "理解何时使用 #pragma pack（网络协议）及其副作用"
+                        ]
+                    }
                 ],
-                skills: "Network Programming, Serialization, Microservices Architecture, Latency Compensation",
-                reward: "🏆 获得成就：【架构师雏形】 - 解锁分布式系统技能"
+                capstone: null,
+                omscs: null
             },
-            'q4': {
-                title: "Level 4: 自动驾驶闭环仿真 (Mini Waabi)",
-                client: "🤖 虚拟甲方：Waabi (Stealth Mode)",
-                brief: "这是最终测试。构建一个由数据驱动的仿真循环：Physics -> Sensor Data -> Control Logic -> Physics。",
-                requirements: [
-                    "**物理层**：集成一个轻量级物理库（如 Bullet 或 Jolt Physics）。",
-                    "**传感器层**：模拟简单的 Raycast Lidar 数据（不需要图形渲染，纯数学计算）。",
-                    "**控制层**：写一个简单的 PID 控制器，让小车根据 Lidar 数据避障。",
-                    "**运行模式**：必须支持 **Headless Mode** (无图形界面运行)，以极快速度跑完 1000 次测试场景。"
+            {
+                id: 3,
+                title: "Concurrency Foundations",
+                duration: "4 weeks",
+                month: "Mar-Apr 2026",
+                goal: "掌握多线程编程核心。Mutex、条件变量、生产者-消费者、线程池。为 GIOS 做准备。",
+                drills: [
+                    { 
+                        id: "3.1", 
+                        name: "Thread Creation", 
+                        skills: "std::thread",
+                        desc: "线程是并发编程的基础。学会创建、管理、终止线程。",
+                        tasks: [
+                            "创建线程打印 \"Hello from thread\"，主线程 join 等待",
+                            "传递参数：创建 N 个线程，每个打印自己的 thread_id",
+                            "理解 join vs detach：detach 后主线程退出会发生什么",
+                            "使用 C++20 std::jthread，自动 join"
+                        ]
+                    },
+                    { 
+                        id: "3.2", 
+                        name: "Mutex Basics", 
+                        skills: "std::mutex",
+                        desc: "Mutex（互斥锁）用于保护共享数据，防止数据竞争。这是并发编程最基本的同步原语。",
+                        tasks: [
+                            "10 个线程同时递增一个 int 变量 100000 次，不加锁，观察结果",
+                            "用 std::mutex + lock()/unlock() 修复，验证结果正确",
+                            "改用 std::lock_guard，理解 RAII 风格的锁管理",
+                            "测量加锁开销：无争用 vs 高争用情况下的性能差异"
+                        ]
+                    },
+                    { 
+                        id: "3.3", 
+                        name: "Deadlock Lab", 
+                        skills: "Deadlock prevention",
+                        desc: "死锁是并发编程的经典问题。你需要知道如何制造它、检测它、避免它。",
+                        tasks: [
+                            "实现经典死锁：线程 A 持有锁 1 等待锁 2，线程 B 持有锁 2 等待锁 1",
+                            "用 GDB 或 ThreadSanitizer 检测死锁状态",
+                            "修复方法 1：固定锁顺序（always lock 1 before 2）",
+                            "修复方法 2：使用 std::scoped_lock 同时获取多个锁"
+                        ]
+                    },
+                    { 
+                        id: "3.4", 
+                        name: "Condition Variables", 
+                        skills: "Wait/notify",
+                        desc: "条件变量用于线程间的等待/通知。比忙等待更高效。",
+                        tasks: [
+                            "实现：工作线程 wait，主线程 notify_one 唤醒",
+                            "实现有界缓冲区：生产者 wait 如果满，消费者 wait 如果空",
+                            "理解虚假唤醒：wait 必须在循环中检查条件",
+                            "理解丢失唤醒：notify 在 wait 之前调用会发生什么"
+                        ]
+                    },
+                    { 
+                        id: "3.5", 
+                        name: "Producer-Consumer", 
+                        skills: "Classic sync",
+                        desc: "生产者-消费者是最经典的并发模式，是消息队列、任务系统的基础。",
+                        tasks: [
+                            "SPSC：1 个生产者，1 个消费者，固定大小环形缓冲区",
+                            "MPSC：多个生产者，1 个消费者，需要生产者端加锁",
+                            "MPMC：多个生产者，多个消费者，双端加锁",
+                            "测量不同配置下的吞吐量（items/sec）"
+                        ]
+                    },
+                    { 
+                        id: "3.6", 
+                        name: "Thread Pool", 
+                        skills: "Task queue",
+                        desc: "线程池避免了频繁创建/销毁线程的开销。这是并发编程的核心基础设施。",
+                        tasks: [
+                            "创建 N 个工作线程，从共享队列中取任务执行",
+                            "队列使用 mutex + condition_variable 保护",
+                            "实现 submit(task) 接口，返回 std::future",
+                            "实现 shutdown()：设置标志，通知所有线程，join 等待"
+                        ]
+                    },
+                    { 
+                        id: "3.7", 
+                        name: "Readers-Writer Lock", 
+                        skills: "shared_mutex",
+                        desc: "读多写少的场景下，读者可以并发，写者必须独占。std::shared_mutex 支持这种模式。",
+                        tasks: [
+                            "用 std::shared_mutex 实现：多读者并发，写者独占",
+                            "基准测试：90% 读 10% 写，对比普通 mutex",
+                            "理解写者饥饿：大量读者可能让写者永远等待",
+                            "（可选）实现公平的读写锁，写者有更高优先级"
+                        ]
+                    },
+                    { 
+                        id: "3.8", 
+                        name: "Thread-Safe Containers", 
+                        skills: "Concurrent DS",
+                        desc: "标准容器不是线程安全的。你需要自己加锁，或使用专门的并发容器。",
+                        tasks: [
+                            "用 mutex 包装 std::queue，实现 push/pop 线程安全",
+                            "用 mutex 包装 std::unordered_map，实现粗粒度锁",
+                            "用多线程压力测试，测量争用情况下的吞吐量",
+                            "（预告）Phase 4 将实现无锁版本"
+                        ]
+                    }
                 ],
-                skills: "System Integration, Physics Engines, Sensor Simulation, CI/CD Pipeline",
-                reward: "👑 获得成就：【Simulation Architect】 - 你已经准备好投递简历了"
+                capstone: { 
+                    name: "Parallel Particle System", 
+                    desc: "将 Phase 1 的 Particle Storm 升级为多线程版本，利用所有 CPU 核心。",
+                    client: "🚀 虚拟甲方：航天器轨道碎片模拟部门",
+                    requirements: [
+                        "使用 Phase 3.6 实现的 Thread Pool",
+                        "将 100K 粒子分成 N 个 chunk，每个 chunk 一个 task",
+                        "验证线程数从 1 到 8 的加速比（speedup ratio）",
+                        "无数据竞争（用 ThreadSanitizer 验证）"
+                    ],
+                    deliverables: [
+                        "可运行的并行粒子系统",
+                        "README 包含加速比曲线图（X: 线程数, Y: speedup）",
+                        "ThreadSanitizer 通过截图"
+                    ],
+                    acceptance: [
+                        "4 线程时加速比 >= 3.5x",
+                        "8 线程时加速比 >= 6x"
+                    ]
+                },
+                omscs: "GIOS"
+            },
+            {
+                id: 4,
+                title: "Lock-Free Programming",
+                duration: "3 weeks",
+                month: "May 2026",
+                goal: "掌握原子操作和无锁算法。理解内存模型、CAS 操作、ABA 问题。",
+                drills: [
+                    { 
+                        id: "4.1", 
+                        name: "Atomic Operations", 
+                        skills: "std::atomic",
+                        desc: "原子操作是无锁编程的基础。理解 load/store/exchange/fetch_add 等操作。",
+                        tasks: [
+                            "用 std::atomic<int> 实现线程安全的计数器，无 mutex",
+                            "对比 volatile int：证明它不是线程安全的",
+                            "使用 fetch_add, exchange, compare_exchange_weak",
+                            "使用 std::atomic_flag 实现最简单的自旋锁"
+                        ]
+                    },
+                    { 
+                        id: "4.2", 
+                        name: "Memory Ordering", 
+                        skills: "memory_order",
+                        desc: "内存序是无锁编程中最难的概念。不理解它，你的无锁代码可能在某些 CPU 上崩溃。",
+                        tasks: [
+                            "理解 memory_order_seq_cst：最强保证，默认选项",
+                            "使用 acquire/release 实现发布-订阅模式",
+                            "使用 relaxed 处理独立计数器（如统计信息）",
+                            "写一个例子展示 x86 上不会发生但 ARM 上会发生的重排序"
+                        ]
+                    },
+                    { 
+                        id: "4.3", 
+                        name: "Compare-and-Swap", 
+                        skills: "CAS, spinlock",
+                        desc: "CAS (Compare-And-Swap) 是无锁算法的核心原语。理解它才能实现无锁数据结构。",
+                        tasks: [
+                            "用 compare_exchange_weak 实现自旋锁",
+                            "实现 CAS 循环模式：do { read; modify } while (!cas)",
+                            "无锁递增 atomic<int>（虽然 fetch_add 更好，但这是练习）",
+                            "实现指数退避（exponential backoff）减少高争用下的 CPU 浪费"
+                        ]
+                    },
+                    { 
+                        id: "4.4", 
+                        name: "Lock-Free Stack", 
+                        skills: "Treiber stack",
+                        desc: "Treiber Stack 是最简单的无锁数据结构。理解它是进入无锁世界的第一步。",
+                        tasks: [
+                            "实现 push：new node, node->next = head, CAS head to node",
+                            "实现 pop：read head, CAS head to head->next, return old head",
+                            "正确处理空栈：pop 返回 nullptr",
+                            "多线程压力测试：100 线程并发 push/pop"
+                        ]
+                    },
+                    { 
+                        id: "4.5", 
+                        name: "Lock-Free Queue", 
+                        skills: "SPSC, MPMC",
+                        desc: "无锁队列比无锁栈更复杂，需要处理头尾指针的并发更新。",
+                        tasks: [
+                            "实现 SPSC 环形缓冲区：单生产者单消费者，最简单场景",
+                            "实现 MPSC 队列：多生产者单消费者",
+                            "（挑战）实现 MPMC 队列：Michael-Scott 算法",
+                            "基准对比：无锁队列 vs Phase 3 的 mutex 队列"
+                        ]
+                    },
+                    { 
+                        id: "4.6", 
+                        name: "ABA Problem", 
+                        skills: "Tagged pointers",
+                        desc: "ABA 问题是无锁编程的经典陷阱。不解决它，你的无锁代码可能丢失数据。",
+                        tasks: [
+                            "构造 ABA 场景：pop A, pop B, push A back, 另一个线程的 CAS 错误成功",
+                            "解决方案 1：Tagged Pointer（高位存版本号）",
+                            "了解 Hazard Pointers 概念（不需要完整实现）",
+                            "了解 Epoch-based Reclamation 概念"
+                        ]
+                    }
+                ],
+                capstone: { 
+                    name: "Traffic Grid", 
+                    desc: "构建一个多智能体交通模拟器，使用无锁消息传递实现车辆间通信。",
+                    client: "🚗 虚拟甲方：智慧城市自动驾驶测试平台",
+                    requirements: [
+                        "模拟 10,000+ 辆车在网格地图上行驶",
+                        "使用空间分区（如 Grid Cell）管理邻居查询",
+                        "车辆之间使用无锁消息队列通信（如碰撞预警）",
+                        "实现简单的碰撞避免行为"
+                    ],
+                    deliverables: [
+                        "可运行的交通模拟器，支持可视化",
+                        "README 包含架构图，说明消息传递机制",
+                        "无锁队列的性能对比数据"
+                    ],
+                    acceptance: [
+                        "10K 车辆，60 FPS",
+                        "无死锁，无数据竞争"
+                    ]
+                },
+                omscs: null
+            },
+            {
+                id: 5,
+                title: "Network Programming",
+                duration: "3 weeks",
+                month: "Jun 2026",
+                goal: "掌握 Socket 编程核心。TCP/UDP、非阻塞 I/O、I/O 多路复用。为 GIOS 做准备。",
+                drills: [
+                    { 
+                        id: "5.1", 
+                        name: "Socket Basics", 
+                        skills: "socket, bind, listen",
+                        desc: "Berkeley Sockets 是网络编程的基础 API，所有现代网络库都构建于此。",
+                        tasks: [
+                            "用 socket() 创建 TCP socket (AF_INET, SOCK_STREAM)",
+                            "用 bind() 绑定到 127.0.0.1:8080",
+                            "用 listen() 开始监听，backlog = 10",
+                            "用 accept() 接受连接，打印客户端地址"
+                        ]
+                    },
+                    { 
+                        id: "5.2", 
+                        name: "TCP Echo Server", 
+                        skills: "Blocking TCP",
+                        desc: "Echo Server 是网络编程的 Hello World。收到什么就发送什么。",
+                        tasks: [
+                            "实现 echo 协议：read -> write -> loop",
+                            "支持多个客户端顺序连接（一个结束后才处理下一个）",
+                            "正确处理 read 返回 0（客户端断开）",
+                            "实现 SIGINT 处理，优雅关闭 socket"
+                        ]
+                    },
+                    { 
+                        id: "5.3", 
+                        name: "UDP Basics", 
+                        skills: "sendto, recvfrom",
+                        desc: "UDP 是无连接协议，更快但不可靠。游戏和实时系统常用 UDP。",
+                        tasks: [
+                            "用 socket() 创建 UDP socket (SOCK_DGRAM)",
+                            "用 sendto/recvfrom 发送和接收数据报",
+                            "故意丢包（iptables DROP），观察程序行为",
+                            "对比 TCP vs UDP：延迟、吞吐量、可靠性"
+                        ]
+                    },
+                    { 
+                        id: "5.4", 
+                        name: "Non-blocking I/O", 
+                        skills: "O_NONBLOCK",
+                        desc: "阻塞 I/O 会让线程停下来等待。非阻塞 I/O 让单线程同时处理多个连接。",
+                        tasks: [
+                            "用 fcntl 设置 socket 为 O_NONBLOCK",
+                            "处理 EAGAIN/EWOULDBLOCK：这不是错误，只是 \"没数据\"",
+                            "实现轮询循环：while(true) { try_read(); try_write(); }",
+                            "测量 CPU 使用率：忙等待的代价"
+                        ]
+                    },
+                    { 
+                        id: "5.5", 
+                        name: "I/O Multiplexing", 
+                        skills: "select, epoll",
+                        desc: "select/poll/epoll 让一个线程高效等待多个 fd。这是高性能服务器的核心。",
+                        tasks: [
+                            "用 select() 同时监听多个客户端 socket",
+                            "用 epoll() 重写，理解 epoll_ctl/epoll_wait",
+                            "对比 Edge-Triggered vs Level-Triggered 模式",
+                            "基准测试：1000 个并发连接下的性能"
+                        ]
+                    },
+                    { 
+                        id: "5.6", 
+                        name: "Multi-threaded Server", 
+                        skills: "Thread pool",
+                        desc: "结合线程池和 I/O 多路复用，构建高性能网络服务器。",
+                        tasks: [
+                            "实现 thread-per-connection 模型：每个连接一个线程",
+                            "实现 thread-pool 模型：主线程 accept，工作线程处理",
+                            "对比两种模型在高并发下的资源消耗",
+                            "实现优雅关闭：拒绝新连接，等待现有连接完成"
+                        ]
+                    }
+                ],
+                capstone: null,
+                omscs: "GIOS"
+            },
+            {
+                id: 6,
+                title: "SIMD Optimization",
+                duration: "2 weeks",
+                month: "Jul 2026",
+                goal: "利用 CPU 向量单元实现最大吞吐量。SSE/AVX intrinsics、自动向量化。为 HPC 做准备。",
+                drills: [
+                    { 
+                        id: "6.1", 
+                        name: "SIMD Introduction", 
+                        skills: "Vector concepts",
+                        desc: "SIMD (Single Instruction Multiple Data) 一条指令处理多个数据。这是现代 CPU 性能的关键。",
+                        tasks: [
+                            "理解 XMM (128-bit), YMM (256-bit), ZMM (512-bit) 寄存器",
+                            "列出 SIMD 友好的操作：加法、乘法、比较、shuffle",
+                            "用 cpuid 或 /proc/cpuinfo 检查 CPU 支持的指令集",
+                            "理解指令延迟 (latency) 和吞吐量 (throughput) 的区别"
+                        ]
+                    },
+                    { 
+                        id: "6.2", 
+                        name: "SSE Intrinsics", 
+                        skills: "__m128",
+                        desc: "SSE 是 128 位 SIMD，可以同时处理 4 个 float。这是 SIMD 入门。",
+                        tasks: [
+                            "包含 <immintrin.h>，声明 __m128 变量",
+                            "用 _mm_load_ps / _mm_store_ps 加载/存储 4 个 float",
+                            "用 _mm_add_ps / _mm_mul_ps 实现向量加法和乘法",
+                            "实现 4-wide 点积：_mm_dp_ps 或手动 mul + hadd"
+                        ]
+                    },
+                    { 
+                        id: "6.3", 
+                        name: "AVX Intrinsics", 
+                        skills: "__m256",
+                        desc: "AVX 是 256 位 SIMD，可以同时处理 8 个 float。性能是 SSE 的两倍。",
+                        tasks: [
+                            "使用 __m256 处理 8-wide float 向量",
+                            "理解 AVX/SSE 转换开销：必要时使用 vzeroupper",
+                            "实现 8-wide 向量运算：加法、乘法、比较",
+                            "基准对比 SSE (4x) vs AVX (8x) 的加速比"
+                        ]
+                    },
+                    { 
+                        id: "6.4", 
+                        name: "Auto-vectorization", 
+                        skills: "Compiler flags",
+                        desc: "编译器可以自动将标量循环向量化。但你需要知道如何帮助它。",
+                        tasks: [
+                            "启用 -O3 -march=native，编译并运行",
+                            "用 -fopt-info-vec 或 -Rpass=loop-vectorize 查看向量化报告",
+                            "识别并移除向量化阻碍：指针别名、复杂控制流",
+                            "对比：手写 intrinsics vs 自动向量化的性能"
+                        ]
+                    },
+                    { 
+                        id: "6.5", 
+                        name: "SIMD Data Layout", 
+                        skills: "Alignment",
+                        desc: "SIMD 对内存对齐有严格要求。未对齐访问可能导致崩溃或性能下降。",
+                        tasks: [
+                            "用 alignas(16) 对齐 SSE 数组，alignas(32) 对齐 AVX",
+                            "对比 _mm_load_ps (对齐) vs _mm_loadu_ps (非对齐) 性能",
+                            "处理数组长度不是 4/8 倍数的情况：尾部标量处理",
+                            "将 Phase 1 的粒子系统数据布局调整为 SIMD 友好"
+                        ]
+                    }
+                ],
+                capstone: { 
+                    name: "SIMD Particle Storm", 
+                    desc: "将 Particle Storm 的物理更新用 SIMD intrinsics 重写，榨干 CPU 的向量性能。",
+                    client: "⚡ 虚拟甲方：实时流体动力学可视化团队",
+                    requirements: [
+                        "使用 SSE 或 AVX intrinsics 重写粒子位置/速度更新",
+                        "保持 SOA 布局，确保 16/32 字节对齐",
+                        "实现至少 4x 加速（对比标量版本）",
+                        "正确处理粒子数量非 4/8 倍数的情况"
+                    ],
+                    deliverables: [
+                        "SIMD 版本的粒子系统",
+                        "性能对比报告：标量 vs SSE vs AVX",
+                        "汇编代码分析截图（验证 SIMD 指令使用）"
+                    ],
+                    acceptance: [
+                        "SSE 版本 >= 3.5x 加速",
+                        "AVX 版本 >= 6x 加速（如果 CPU 支持）"
+                    ]
+                },
+                omscs: "HPC"
+            },
+            {
+                id: 7,
+                title: "Distributed Simulation",
+                duration: "4 weeks",
+                month: "Jul-Aug 2026",
+                goal: "跨网络同步仿真状态。客户端-服务器架构、状态序列化、时钟同步、延迟补偿。",
+                drills: [
+                    { 
+                        id: "7.1", 
+                        name: "Client-Server Model", 
+                        skills: "Architecture",
+                        desc: "分布式仿真的基础架构：服务器是权威（single source of truth），客户端是渲染者。",
+                        tasks: [
+                            "设计架构：服务器持有完整状态，客户端只发送输入",
+                            "定义消息协议：InputMessage, StateSnapshot, EntityUpdate",
+                            "实现服务器的 tick 循环：收集输入 -> 更新状态 -> 广播快照",
+                            "处理客户端连接/断开：分配/回收 player_id"
+                        ]
+                    },
+                    { 
+                        id: "7.2", 
+                        name: "State Serialization", 
+                        skills: "Binary",
+                        desc: "网络传输需要将对象序列化为字节。二进制格式比 JSON 快 10-100 倍。",
+                        tasks: [
+                            "实现二进制序列化：直接写 struct 字节",
+                            "使用固定宽度类型：uint32_t 而非 int",
+                            "处理字节序：网络用 big-endian，或用 htonl/ntohl",
+                            "测量序列化开销：1000 个实体的状态打包时间"
+                        ]
+                    },
+                    { 
+                        id: "7.3", 
+                        name: "Delta Compression", 
+                        skills: "Only changes",
+                        desc: "发送完整状态浪费带宽。只发送变化的部分（delta）可以节省 90% 带宽。",
+                        tasks: [
+                            "为每个实体维护 dirty flag",
+                            "新连接时发送完整状态",
+                            "后续只发送 dirty 的实体",
+                            "处理丢包：客户端请求全量重同步"
+                        ]
+                    },
+                    { 
+                        id: "7.4", 
+                        name: "Clock Synchronization", 
+                        skills: "NTP-like",
+                        desc: "客户端和服务器的时钟不同步。你需要测量并补偿这个差异。",
+                        tasks: [
+                            "测量 RTT (Round-Trip Time)：发送 ping，等待 pong",
+                            "估算时钟偏移：server_time ≈ client_time + offset",
+                            "使用 NTP 式算法：多次采样取中位数",
+                            "处理时钟漂移：定期重新同步"
+                        ]
+                    },
+                    { 
+                        id: "7.5", 
+                        name: "Lag Compensation", 
+                        skills: "Prediction",
+                        desc: "网络延迟让游戏感觉迟钝。预测和插值可以隐藏延迟。",
+                        tasks: [
+                            "客户端预测：本地立即应用输入，不等服务器确认",
+                            "服务器对账 (reconciliation)：收到服务器状态后修正本地状态",
+                            "实体插值：平滑渲染其他玩家的移动",
+                            "处理预测错误：回滚到服务器状态，重放本地输入"
+                        ]
+                    },
+                    { 
+                        id: "7.6", 
+                        name: "Reliable UDP", 
+                        skills: "ACK, retransmit",
+                        desc: "UDP 快但不可靠。你需要在上面构建可靠层。",
+                        tasks: [
+                            "实现序列号：每个包递增的 sequence number",
+                            "实现确认 (ACK)：收到包后发送 ACK",
+                            "实现重传：超时未收到 ACK 则重发",
+                            "实现顺序保证：乱序到达的包重新排序"
+                        ]
+                    }
+                ],
+                capstone: { 
+                    name: "Mirror World", 
+                    desc: "构建一个联网分布式仿真：多个客户端共享同一个粒子世界，实时同步。",
+                    client: "🌐 虚拟甲方：Metaverse 基础设施研发部",
+                    requirements: [
+                        "1 个服务器 + 2 个或更多客户端",
+                        "共享的粒子世界：所有客户端看到相同的粒子",
+                        "任意客户端可以发射粒子，其他客户端实时看到",
+                        "表观延迟 < 100ms（从发射到其他客户端看到）"
+                    ],
+                    deliverables: [
+                        "可运行的服务器和客户端程序",
+                        "README 包含网络协议文档",
+                        "演示视频：多个客户端窗口同步"
+                    ],
+                    acceptance: [
+                        "本地测试延迟 < 50ms",
+                        "跨机器测试延迟 < 100ms",
+                        "丢包 10% 情况下仍能正常运行"
+                    ]
+                },
+                omscs: "DC"
             }
-        };
+        ];
 
-        function openModal(id) {
-            const data = questData[id];
-            const modal = document.getElementById('modal-container');
-            const content = document.getElementById('modal-content');
+        // ============================================================
+        // State Management
+        // ============================================================
+        let state = loadState();
+
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    return JSON.parse(saved);
+                } catch (e) {
+                    console.error('Failed to parse saved state:', e);
+                }
+            }
+            return createInitialState();
+        }
+
+        function createInitialState() {
+            const state = { drills: {}, tasks: {}, capstones: {} };
+            initialPhases.forEach(phase => {
+                phase.drills.forEach(drill => {
+                    state.drills[drill.id] = false;
+                    drill.tasks.forEach((task, idx) => {
+                        state.tasks[`${drill.id}-${idx}`] = false;
+                    });
+                });
+                if (phase.capstone) {
+                    state.capstones[phase.id] = false;
+                }
+            });
+            return state;
+        }
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            updateStats();
+        }
+
+        function toggleDrillComplete(drillId) {
+            state.drills[drillId] = !state.drills[drillId];
+            const drill = findDrill(drillId);
             
-            content.innerHTML = `
-                <span class="close-btn" onclick="closeModal()">&times;</span>
-                <div class="modal-header">
-                    <h2>${data.title}</h2>
-                    <div style="color: var(--accent-blue); margin-top: 5px;">${data.client}</div>
-                </div>
-                <div class="section-title">📝 需求简述 (Brief)</div>
-                <p style="color: var(--text-primary); line-height: 1.6;">${data.brief}</p>
+            // Sync all tasks with drill state
+            if (drill) {
+                drill.tasks.forEach((_, idx) => {
+                    state.tasks[`${drillId}-${idx}`] = state.drills[drillId];
+                });
+            }
+            
+            saveState();
+            
+            // Update DOM without full re-render
+            const drillCard = document.querySelector(`.drill-card[data-drill-id="${drillId}"]`);
+            if (drillCard) {
+                const checkbox = drillCard.querySelector('.checkbox-input');
+                checkbox.checked = state.drills[drillId];
                 
-                <div class="section-title">⚙️ 技术规格 (Specs)</div>
-                <ul>
-                    ${data.requirements.map(req => `<li>${req}</li>`).join('')}
-                </ul>
+                drillCard.classList.toggle('done', state.drills[drillId]);
+                
+                // Update all task checkboxes
+                drillCard.querySelectorAll('.task-checkbox').forEach(el => {
+                    el.classList.toggle('done', state.drills[drillId]);
+                });
+                drillCard.querySelectorAll('.task-text').forEach(el => {
+                    el.classList.toggle('done', state.drills[drillId]);
+                });
+                
+                // Update drill skills text
+                if (drill) {
+                    const completedTasks = drill.tasks.filter((_, idx) => state.tasks[`${drillId}-${idx}`]).length;
+                    const skillsEl = drillCard.querySelector('.drill-skills');
+                    if (skillsEl) {
+                        skillsEl.textContent = `${drill.skills} · ${completedTasks}/${drill.tasks.length} tasks`;
+                    }
+                }
+            }
+            
+            updatePhaseProgress(drillId);
+            updateStats();
+            showToast(state.drills[drillId] ? `Drill ${drillId} 完成!` : `Drill ${drillId} 已取消`);
+        }
 
-                <div class="section-title">🔧 关键技能点 (Skill Tree)</div>
-                <div class="tech-stack">
-                    ${data.skills.split(', ').map(s => `<span class="tech-tag" style="background:var(--border)">${s}</span>`).join('')}
-                </div>
+        function toggleTaskComplete(taskId) {
+            state.tasks[taskId] = !state.tasks[taskId];
+            
+            // taskId format: "0.1-0" -> drillId = "0.1", taskIndex = 0
+            const lastDashIndex = taskId.lastIndexOf('-');
+            const drillId = taskId.substring(0, lastDashIndex);
+            const taskIndex = parseInt(taskId.substring(lastDashIndex + 1));
+            
+            const drill = findDrill(drillId);
+            
+            // Update task checkbox in DOM immediately
+            const drillCard = document.querySelector(`.drill-card[data-drill-id="${drillId}"]`);
+            if (drillCard) {
+                const taskItems = drillCard.querySelectorAll('.task-item');
+                if (taskItems[taskIndex]) {
+                    const taskCheckbox = taskItems[taskIndex].querySelector('.task-checkbox');
+                    const taskText = taskItems[taskIndex].querySelector('.task-text');
+                    taskCheckbox.classList.toggle('done', state.tasks[taskId]);
+                    taskText.classList.toggle('done', state.tasks[taskId]);
+                }
+            }
+            
+            // Check if all tasks in drill are complete
+            if (drill) {
+                const allTasksDone = drill.tasks.every((_, idx) => state.tasks[`${drillId}-${idx}`]);
+                const wasDone = state.drills[drillId];
+                state.drills[drillId] = allTasksDone;
+                
+                // Update drill card if status changed
+                if (wasDone !== allTasksDone && drillCard) {
+                    const checkbox = drillCard.querySelector('.checkbox-input');
+                    checkbox.checked = allTasksDone;
+                    drillCard.classList.toggle('done', allTasksDone);
+                }
+                
+                // Update drill skills text
+                if (drillCard) {
+                    const completedTasks = drill.tasks.filter((_, idx) => state.tasks[`${drillId}-${idx}`]).length;
+                    const skillsEl = drillCard.querySelector('.drill-skills');
+                    if (skillsEl) {
+                        skillsEl.textContent = `${drill.skills} · ${completedTasks}/${drill.tasks.length} tasks`;
+                    }
+                }
+            }
+            
+            saveState();
+            updatePhaseProgress(drillId);
+            updateStats();
+        }
 
-                <div class="reward-box">
-                    ${data.reward}
+        function toggleCapstoneComplete(phaseId) {
+            state.capstones[phaseId] = !state.capstones[phaseId];
+            saveState();
+            
+            // Update toggle switch in DOM
+            const phaseCard = document.querySelector(`.phase-card[data-phase-id="${phaseId}"]`);
+            if (phaseCard) {
+                const toggle = phaseCard.querySelector('.toggle-switch');
+                const label = phaseCard.querySelector('.capstone-status-label');
+                if (toggle) {
+                    toggle.classList.toggle('active', state.capstones[phaseId]);
+                }
+                if (label) {
+                    label.textContent = state.capstones[phaseId] ? '已完成' : '未完成';
+                }
+            }
+            
+            updatePhaseStatus(phaseId);
+            updateStats();
+            
+            const phase = initialPhases.find(p => p.id === phaseId);
+            showToast(state.capstones[phaseId] ? 
+                `🏆 ${phase.capstone.name} 完成!` : 
+                `${phase.capstone.name} 已取消`);
+        }
+        
+        function updatePhaseProgress(drillId) {
+            // Find which phase this drill belongs to
+            const phaseId = parseInt(drillId.split('.')[0]);
+            updatePhaseStatus(phaseId);
+        }
+        
+        function updatePhaseStatus(phaseId) {
+            const phase = initialPhases.find(p => p.id === phaseId);
+            if (!phase) return;
+            
+            const phaseCard = document.querySelector(`.phase-card[data-phase-id="${phaseId}"]`);
+            if (!phaseCard) return;
+            
+            const completedDrills = phase.drills.filter(d => state.drills[d.id]).length;
+            const totalDrills = phase.drills.length;
+            const isPhaseComplete = completedDrills === totalDrills && 
+                (!phase.capstone || state.capstones[phaseId]);
+            const isInProgress = completedDrills > 0 && !isPhaseComplete;
+            
+            // Update phase card classes
+            phaseCard.classList.remove('completed', 'in-progress');
+            if (isPhaseComplete) phaseCard.classList.add('completed');
+            else if (isInProgress) phaseCard.classList.add('in-progress');
+            
+            // Update progress mini badge
+            const progressMini = phaseCard.querySelector('.phase-progress-mini');
+            if (progressMini) {
+                progressMini.textContent = `${completedDrills}/${totalDrills}`;
+                progressMini.classList.toggle('complete', isPhaseComplete);
+            }
+            
+            // Update section title
+            const sectionTitle = phaseCard.querySelector('.section-title');
+            if (sectionTitle) {
+                sectionTitle.childNodes[0].textContent = `Drills (${completedDrills}/${totalDrills})`;
+            }
+        }
+
+        function findDrill(drillId) {
+            for (const phase of initialPhases) {
+                const drill = phase.drills.find(d => d.id === drillId);
+                if (drill) return drill;
+            }
+            return null;
+        }
+
+        function resetProgress() {
+            if (confirm('确定要重置所有进度吗？此操作不可撤销。')) {
+                state = createInitialState();
+                saveState();
+                renderTimeline();
+                showToast('进度已重置');
+            }
+        }
+
+        function exportProgress() {
+            const dataStr = JSON.stringify(state, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `sim-lab-progress-${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('进度已导出');
+        }
+
+        function importProgress() {
+            document.getElementById('importInput').click();
+        }
+
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    state = imported;
+                    saveState();
+                    renderTimeline();
+                    showToast('进度已导入');
+                } catch (err) {
+                    alert('导入失败：文件格式不正确');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // ============================================================
+        // Rendering
+        // ============================================================
+        function renderTimeline() {
+            const timeline = document.getElementById('timeline');
+            const expandedPhases = new Set();
+            const expandedDrills = new Set();
+
+            // Remember expanded states
+            document.querySelectorAll('.phase-card.expanded').forEach(el => {
+                expandedPhases.add(parseInt(el.dataset.phaseId));
+            });
+            document.querySelectorAll('.drill-card.expanded').forEach(el => {
+                expandedDrills.add(el.dataset.drillId);
+            });
+
+            timeline.innerHTML = '';
+
+            initialPhases.forEach(phase => {
+                const completedDrills = phase.drills.filter(d => state.drills[d.id]).length;
+                const totalDrills = phase.drills.length;
+                const isPhaseComplete = completedDrills === totalDrills && 
+                    (!phase.capstone || state.capstones[phase.id]);
+                const isInProgress = completedDrills > 0 && !isPhaseComplete;
+
+                const card = document.createElement('div');
+                card.className = `phase-card phase-${phase.id}`;
+                card.dataset.phaseId = phase.id;
+                
+                if (isPhaseComplete) card.classList.add('completed');
+                else if (isInProgress) card.classList.add('in-progress');
+                if (expandedPhases.has(phase.id)) card.classList.add('expanded');
+
+                const progressMiniClass = isPhaseComplete ? 'complete' : '';
+
+                card.innerHTML = `
+                    <div class="phase-header" onclick="togglePhase(${phase.id})">
+                        <span class="phase-number">Phase ${phase.id}</span>
+                        <div class="phase-info">
+                            <div class="phase-title-row">
+                                <span class="phase-title">${phase.title}</span>
+                                <span class="phase-progress-mini ${progressMiniClass}">${completedDrills}/${totalDrills}</span>
+                            </div>
+                            <div class="phase-meta">
+                                <span>${phase.duration}</span>
+                                <span>${phase.month}</span>
+                                ${phase.capstone ? `<span class="phase-capstone-badge">🏆 ${phase.capstone.name}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="phase-toggle">▼</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="phase-content-wrapper">
+                            <div class="phase-inner">
+                                <div class="phase-goal">${phase.goal}</div>
+                                
+                                <div class="section-title">Drills (${completedDrills}/${totalDrills})</div>
+                                <div class="drill-grid">
+                                    ${phase.drills.map(drill => renderDrill(drill, expandedDrills.has(drill.id))).join('')}
+                                </div>
+
+                                ${phase.capstone ? renderCapstone(phase) : ''}
+                                ${phase.omscs ? `<a href="#" class="omscs-link">📚 OMSCS: ${phase.omscs}</a>` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                timeline.appendChild(card);
+            });
+
+            updateStats();
+        }
+
+        function renderDrill(drill, isExpanded) {
+            const isDone = state.drills[drill.id];
+            const completedTasks = drill.tasks.filter((_, idx) => state.tasks[`${drill.id}-${idx}`]).length;
+
+            return `
+                <div class="drill-card ${isDone ? 'done' : ''} ${isExpanded ? 'expanded' : ''}" data-drill-id="${drill.id}">
+                    <div class="drill-header">
+                        <div class="checkbox-wrapper" onclick="event.stopPropagation(); toggleDrillComplete('${drill.id}')">
+                            <input type="checkbox" class="checkbox-input" ${isDone ? 'checked' : ''}>
+                            <div class="checkbox-custom"></div>
+                        </div>
+                        <div class="drill-info" onclick="toggleDrillExpand('${drill.id}')">
+                            <div class="drill-title-row">
+                                <span class="drill-id">${drill.id}</span>
+                                <span class="drill-name">${drill.name}</span>
+                            </div>
+                            <div class="drill-skills">${drill.skills} · ${completedTasks}/${drill.tasks.length} tasks</div>
+                        </div>
+                        <div class="drill-expand-btn" onclick="toggleDrillExpand('${drill.id}')">
+                            ${isExpanded ? '收起' : '展开'}
+                        </div>
+                    </div>
+                    <div class="drill-tasks">
+                        <div class="drill-tasks-inner">
+                            <div class="drill-tasks-content">
+                                ${drill.desc ? `<div class="drill-desc">${drill.desc}</div>` : ''}
+                                <div class="drill-tasks-label">Tasks</div>
+                                ${drill.tasks.map((task, idx) => {
+                                    const taskId = `${drill.id}-${idx}`;
+                                    const taskDone = state.tasks[taskId];
+                                    return `
+                                        <div class="task-item">
+                                            <div class="task-checkbox-wrapper">
+                                                <div class="task-checkbox ${taskDone ? 'done' : ''}" 
+                                                     onclick="toggleTaskComplete('${taskId}')"></div>
+                                            </div>
+                                            <span class="task-text ${taskDone ? 'done' : ''}">${task}</span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `;
-            
-            modal.classList.add('active');
         }
 
-        function closeModal() {
-            document.getElementById('modal-container').classList.remove('active');
+        function renderCapstone(phase) {
+            const isDone = state.capstones[phase.id];
+            const c = phase.capstone;
+            
+            return `
+                <div class="capstone-section" data-capstone-id="${phase.id}">
+                    <div class="capstone-header" onclick="toggleCapstoneExpand(${phase.id})">
+                        <span class="capstone-icon">🏆</span>
+                        <div class="capstone-header-info">
+                            <span class="capstone-title">${c.name}</span>
+                            ${c.client ? `<span class="capstone-client-mini">${c.client}</span>` : ''}
+                        </div>
+                        <div class="capstone-header-right">
+                            <div class="capstone-toggle" onclick="event.stopPropagation()">
+                                <span class="capstone-status-label">${isDone ? '已完成' : '未完成'}</span>
+                                <div class="toggle-switch ${isDone ? 'active' : ''}" 
+                                     onclick="toggleCapstoneComplete(${phase.id})"></div>
+                            </div>
+                            <div class="capstone-expand-icon">▼</div>
+                        </div>
+                    </div>
+                    
+                    <div class="capstone-content">
+                        <div class="capstone-content-inner">
+                            ${c.desc ? `<div class="capstone-desc">${c.desc}</div>` : ''}
+                            
+                            ${c.requirements ? `
+                                <div class="capstone-block">
+                                    <div class="capstone-block-title">📋 Requirements</div>
+                                    <ul class="capstone-list">
+                                        ${c.requirements.map(r => `<li>${r}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            
+                            ${c.deliverables ? `
+                                <div class="capstone-block">
+                                    <div class="capstone-block-title">📦 Deliverables</div>
+                                    <ul class="capstone-list">
+                                        ${c.deliverables.map(d => `<li>${d}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                            
+                            ${c.acceptance ? `
+                                <div class="capstone-block acceptance">
+                                    <div class="capstone-block-title">✅ Acceptance Criteria</div>
+                                    <ul class="capstone-list">
+                                        ${c.acceptance.map(a => `<li>${a}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
         }
+        
+        function toggleCapstoneExpand(phaseId) {
+            const section = document.querySelector(`.capstone-section[data-capstone-id="${phaseId}"]`);
+            if (section) {
+                section.classList.toggle('expanded');
+            }
+        }
+
+        function togglePhase(phaseId) {
+            const card = document.querySelector(`.phase-card[data-phase-id="${phaseId}"]`);
+            card.classList.toggle('expanded');
+        }
+
+        function toggleDrillExpand(drillId) {
+            const card = document.querySelector(`.drill-card[data-drill-id="${drillId}"]`);
+            card.classList.toggle('expanded');
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.phase-card').forEach(el => el.classList.remove('expanded'));
+            document.querySelectorAll('.drill-card').forEach(el => el.classList.remove('expanded'));
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.phase-card').forEach(el => el.classList.add('expanded'));
+        }
+
+        // ============================================================
+        // Stats
+        // ============================================================
+        function updateStats() {
+            let totalDrills = 0;
+            let completedDrills = 0;
+            let totalTasks = 0;
+            let completedTasks = 0;
+            let totalCapstones = 0;
+            let completedCapstones = 0;
+            let completedPhases = 0;
+
+            initialPhases.forEach(phase => {
+                const phaseDrillsDone = phase.drills.filter(d => state.drills[d.id]).length;
+                totalDrills += phase.drills.length;
+                completedDrills += phaseDrillsDone;
+
+                phase.drills.forEach(drill => {
+                    totalTasks += drill.tasks.length;
+                    completedTasks += drill.tasks.filter((_, idx) => state.tasks[`${drill.id}-${idx}`]).length;
+                });
+
+                if (phase.capstone) {
+                    totalCapstones++;
+                    if (state.capstones[phase.id]) completedCapstones++;
+                }
+
+                const isPhaseComplete = phaseDrillsDone === phase.drills.length && 
+                    (!phase.capstone || state.capstones[phase.id]);
+                if (isPhaseComplete) completedPhases++;
+            });
+
+            document.getElementById('stat-phases').textContent = `${completedPhases}/8`;
+            document.getElementById('stat-drills').textContent = `${completedDrills}/${totalDrills}`;
+            document.getElementById('stat-tasks').textContent = completedTasks;
+            document.getElementById('stat-capstones').textContent = `${completedCapstones}/${totalCapstones}`;
+
+            // Progress bar based on drills + capstones
+            const totalItems = totalDrills + totalCapstones;
+            const completedItems = completedDrills + completedCapstones;
+            const percent = totalItems > 0 ? Math.round((completedItems / totalItems) * 100) : 0;
+            
+            document.getElementById('progress-bar').style.width = `${Math.max(percent, 2)}%`;
+            document.getElementById('progress-percent').textContent = `${percent}%`;
+        }
+
+        // ============================================================
+        // Toast
+        // ============================================================
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show', 'success');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // ============================================================
+        // Initialize
+        // ============================================================
+        renderTimeline();
+
+        // Auto-expand first incomplete phase
+        setTimeout(() => {
+            const firstIncomplete = initialPhases.find(phase => {
+                const completedDrills = phase.drills.filter(d => state.drills[d.id]).length;
+                const isComplete = completedDrills === phase.drills.length && 
+                    (!phase.capstone || state.capstones[phase.id]);
+                return !isComplete;
+            });
+            if (firstIncomplete) {
+                togglePhase(firstIncomplete.id);
+            }
+        }, 300);
     </script>
 </body>
 </html>

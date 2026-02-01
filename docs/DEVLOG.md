@@ -1,8 +1,50 @@
-# 开发日志 - Simulation Architect Lab
+# 开发日志 - Sim-Architecture-Lab
+
+> A 22-week training program for high-performance C++ simulation systems.
 
 ---
 
-## 2026-01-27 | Level 1: Particle Storm - Day 1
+## 2026-02-01 | Project Restructure
+
+### 🔄 Major Changes
+
+- Restructured project from "Levels" to "Phases" curriculum
+- Created 8 phases with 40+ drills and 5 capstones
+- Moved Particle Storm to `phase_1_memory/capstone_particle_storm/`
+- Added detailed `CURRICULUM.md` with drill specifications
+- Updated `.cursorrules` with curriculum context
+
+### 📂 New Structure
+
+```
+Sim-Architecture-Lab/
+├── phase_0_onboarding/     # C++ fundamentals
+├── phase_1_memory/         # Memory architecture
+│   └── capstone_particle_storm/
+├── phase_2_dod/            # Data-oriented design
+├── phase_3_concurrency/    # Multi-threading
+├── phase_4_lockfree/       # Lock-free programming
+├── phase_5_network/        # Network programming
+├── phase_6_simd/           # SIMD optimization
+└── phase_7_distributed/    # Distributed simulation
+```
+
+### 🎯 Timeline
+
+| Month | Phases | Milestone |
+|:------|:-------|:----------|
+| Feb 2026 | 0, 1 | C++ fluency, Particle Storm polished |
+| Mar 2026 | 2, 3 | DOD, Threading basics |
+| Apr 2026 | 3 | Parallel Particle System |
+| May 2026 | 4 | Lock-free, Traffic Grid |
+| Jun 2026 | 5 | Network programming |
+| Jul 2026 | 6, 7 | SIMD, Distributed basics |
+| Aug 2026 | 7 | Mirror World, Lab complete |
+| Sep 2026 | - | OMSCS GIOS begins |
+
+---
+
+## 2026-01-27 | Phase 1: Particle Storm - Day 1
 
 ### ✅ 完成项
 

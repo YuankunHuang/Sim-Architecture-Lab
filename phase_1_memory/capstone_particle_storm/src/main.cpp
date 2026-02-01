@@ -12,7 +12,7 @@ constexpr int kMaxLifetime = 20;
 
 int main()
 {
-    InitWindow(kScreenWidth, kScreenHeight, "Level 1 Particle Storm");
+    InitWindow(kScreenWidth, kScreenHeight, "Capstone 1: Particle Storm");
     SetTargetFPS(kTargetFps);
 
     ParticleSystem particles(kMaxParticles);
