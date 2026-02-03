@@ -1159,6 +1159,67 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--bg-hover);
         }
+
+        /* Unsaved changes banner */
+        .unsaved-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, var(--orange-dim), var(--yellow-dim));
+            border-top: 2px solid var(--orange);
+            padding: 12px 24px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            z-index: 1000;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .unsaved-banner.show {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .unsaved-banner span {
+            color: var(--orange);
+            font-weight: 500;
+        }
+
+        .btn-save {
+            background: var(--green);
+            color: var(--bg-primary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .btn-save:hover {
+            background: #4ade80;
+            transform: scale(1.05);
+        }
+
+        .btn-dismiss {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-dismiss:hover {
+            background: var(--bg-tertiary);
+        }
     </style>
 </head>
 <body>
@@ -1205,6 +1266,13 @@
                 <button class="btn btn-danger" onclick="resetProgress()">重置进度</button>
             </div>
         </header>
+
+        <!-- Unsaved changes banner -->
+        <div class="unsaved-banner" id="unsaved-banner">
+            <span>📝 有未导出的更改</span>
+            <button class="btn-save" onclick="exportProgress()">导出 JSON</button>
+            <button class="btn-dismiss" onclick="dismissUnsavedBanner()">稍后</button>
+        </div>
 
         <div class="timeline" id="timeline"></div>
     </div>
@@ -1963,17 +2031,42 @@
         // ============================================================
         // State Management
         // ============================================================
-        let state = loadState();
+        const PROGRESS_FILE = 'docs/progress.json';
+        let state = createInitialState(); // Will be overwritten by async load
+        let isDirty = false;  // Track unsaved changes
+        let lastExportedState = null;  // State at last export
 
-        function loadState() {
+        async function loadStateAsync() {
+            // Priority 1: Try to load from project file (for cross-machine sync)
+            // Only works when served via HTTP (not file://)
+            if (window.location.protocol !== 'file:') {
+                try {
+                    const response = await fetch(PROGRESS_FILE);
+                    if (response.ok) {
+                        const fileState = await response.json();
+                        console.log('✓ Loaded progress from', PROGRESS_FILE);
+                        return fileState;
+                    }
+                } catch (e) {
+                    console.log('Could not load project file:', e.message);
+                }
+            } else {
+                console.log('Running via file:// - skipping fetch, use: python3 -m http.server 8080');
+            }
+            
+            // Priority 2: Load from localStorage (local cache)
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
                 try {
+                    console.log('✓ Loaded progress from localStorage');
                     return JSON.parse(saved);
                 } catch (e) {
                     console.error('Failed to parse saved state:', e);
                 }
             }
+            
+            // Priority 3: Create fresh state
+            console.log('Starting with fresh state');
             return createInitialState();
         }
 
@@ -1996,6 +2089,24 @@
         function saveState() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
             updateStats();
+            
+            // Compare with last export and update dirty status
+            if (lastExportedState) {
+                const hasChanges = JSON.stringify(state) !== JSON.stringify(lastExportedState);
+                setDirty(hasChanges);
+            }
+        }
+
+        function setDirty(dirty) {
+            isDirty = dirty;
+            const banner = document.getElementById('unsaved-banner');
+            if (banner) {
+                banner.classList.toggle('show', dirty);
+            }
+        }
+
+        function dismissUnsavedBanner() {
+            document.getElementById('unsaved-banner').classList.remove('show');
         }
 
         function toggleDrillComplete(drillId) {
@@ -2179,10 +2290,14 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `sim-lab-progress-${new Date().toISOString().slice(0, 10)}.json`;
+            a.download = 'progress.json';  // Fixed name for git tracking
             a.click();
             URL.revokeObjectURL(url);
-            showToast('进度已导出');
+            
+            // Mark as saved
+            lastExportedState = JSON.parse(JSON.stringify(state));
+            setDirty(false);
+            showToast('进度已导出 → 请保存到 docs/progress.json');
         }
 
         function importProgress() {
@@ -2475,20 +2590,37 @@
         // ============================================================
         // Initialize
         // ============================================================
-        renderTimeline();
+        async function init() {
+            state = await loadStateAsync();
+            lastExportedState = JSON.parse(JSON.stringify(state)); // Snapshot
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); // Sync to localStorage
+            updateStats();
+            renderTimeline();
 
-        // Auto-expand first incomplete phase
-        setTimeout(() => {
-            const firstIncomplete = initialPhases.find(phase => {
-                const completedDrills = phase.drills.filter(d => state.drills[d.id]).length;
-                const isComplete = completedDrills === phase.drills.length && 
-                    (!phase.capstone || state.capstones[phase.id]);
-                return !isComplete;
-            });
-            if (firstIncomplete) {
-                togglePhase(firstIncomplete.id);
+            // Auto-expand first incomplete phase
+            setTimeout(() => {
+                const firstIncomplete = initialPhases.find(phase => {
+                    const completedDrills = phase.drills.filter(d => state.drills[d.id]).length;
+                    const isComplete = completedDrills === phase.drills.length && 
+                        (!phase.capstone || state.capstones[phase.id]);
+                    return !isComplete;
+                });
+                if (firstIncomplete) {
+                    togglePhase(firstIncomplete.id);
+                }
+            }, 300);
+        }
+
+        // Warn before leaving if there are unsaved changes
+        window.addEventListener('beforeunload', (e) => {
+            if (isDirty) {
+                e.preventDefault();
+                e.returnValue = '有未保存的更改，确定离开吗？';
+                return e.returnValue;
             }
-        }, 300);
+        });
+
+        init();
     </script>
 </body>
 </html>

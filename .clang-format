@@ -7,4 +7,3 @@ SortIncludes:    true
 ReflowComments:  true
 AccessModifierOffset: -4
 AllowShortFunctionsOnASingleLine: Inline
-...

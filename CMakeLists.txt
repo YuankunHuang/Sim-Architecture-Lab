@@ -17,6 +17,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Output directories
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
@@ -27,7 +28,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 
 include(FetchContent)
 
-# Raylib - Visualization only
 FetchContent_Declare(
     raylib
     GIT_REPOSITORY https://github.com/raysan5/raylib.git
@@ -42,10 +42,10 @@ FetchContent_MakeAvailable(raylib)
 # -----------------------------------------------------------------------------
 
 # Phase 0: C++ Onboarding
-# add_subdirectory(phase_0_onboarding)
+add_subdirectory(phase_0_onboarding)
 
 # Phase 1: Memory Architecture
-add_subdirectory(phase_1_memory)
+# add_subdirectory(phase_1_memory)
 
 # Phase 2: Data-Oriented Design
 # add_subdirectory(phase_2_dod)
